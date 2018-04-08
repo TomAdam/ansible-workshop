@@ -1,0 +1,6 @@
+---
+admin_do_public_key_id:
+do_instances: []
+#- key_name:
+#  public_key:
+#  host_name:

@@ -1,0 +1,5 @@
+{%  for instance in do_instances %}
+- name: {{ instance.key_name }}
+  ip: {{ do_droplets.results[loop.index0].droplet.ip_address }}
+  server_name: {{ instance.host_name }}
+{% endfor %}

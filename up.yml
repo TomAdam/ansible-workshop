@@ -1,0 +1,38 @@
+---
+- hosts: all
+  gather_facts: false
+  vars_files:
+  - secure_vars/do.yml
+  tasks:
+  - name: Register SSH keys
+    digital_ocean:
+      state: present
+      api_token: '{{ do_api_token }}'
+      command: ssh
+      name: '{{ item.key_name }}'
+      ssh_pub_key: '{{ item.public_key }}'
+    with_items: '{{ do_instances }}'
+    register: do_ssh_keys
+
+  - name: Create droplets
+    digital_ocean:
+      state: present
+      api_token: '{{ do_api_token }}'
+      command: droplet
+      name: '{{ item.0.host_name }}'
+      image_id: debian-8-x64
+      region_id: lon1
+      size_id: 512mb
+      unique_name: true
+      ssh_key_ids:
+      - '{{ admin_do_public_key_id }}'
+      - '{{ item.1.ssh_key.id }}'
+    with_together:
+    - '{{ do_instances }}'
+    - '{{ do_ssh_keys.results }}'
+    register: do_droplets
+
+  - name: Write created droplet details to disk
+    template:
+      src: templates/droplets.yml.j2
+      dest: ./droplets.yml

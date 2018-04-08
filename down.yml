@@ -1,0 +1,23 @@
+---
+- hosts: all
+  gather_facts: false
+  vars_files:
+  - secure_vars/do.yml
+  tasks:
+  - name: Remove SSH keys
+    digital_ocean:
+      state: absent
+      api_token: '{{ do_api_token }}'
+      command: ssh
+      name: '{{ item.key_name }}'
+      ssh_pub_key: '{{ item.public_key }}'
+    with_items: '{{ do_instances }}'
+
+  - name: Destroy droplets
+    digital_ocean:
+      state: deleted
+      api_token: '{{ do_api_token }}'
+      command: droplet
+      name: '{{ item.host_name }}'
+      unique_name: true
+    with_items: '{{ do_instances }}'
