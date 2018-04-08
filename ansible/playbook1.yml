@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  tasks:
+  - name: Create directory
+    file:
+      state: directory
+      path: ~/remote_dir
+      mode: 0777
+ 
+  - name: Copy file to server
+    copy:
+      src: playbook1.yml
+      dest: ~/remote_dir

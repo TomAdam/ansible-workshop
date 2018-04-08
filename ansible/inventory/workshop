@@ -1,0 +1,2 @@
+[workshop]
+my.hostname ansible_host=46.101.26.116 ansible_user=root

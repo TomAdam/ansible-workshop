@@ -1,0 +1,18 @@
+---
+- hosts: all
+  become: true
+  vars_files:
+  - vars/playbook2.yml
+  vars:
+    something: else
+  tasks:
+  - name: Create directory
+    file:
+      state: directory
+      path: "~/{{ dir_name }}"
+      mode: 0777
+ 
+  - name: Copy file to server
+    copy:
+      src: playbook2.yml
+      dest: "~/{{ dir_name }}"
